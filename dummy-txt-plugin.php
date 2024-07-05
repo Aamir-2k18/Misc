@@ -2,18 +2,25 @@
 /*
 Plugin Name: Dummy Text
 URI: n/a
-Author: A
+Author: Aamir
 Author URI: n/a
 Version: 1.0
-Description: A plugin that generates Dummy Text paragraphs.
+Description: A plugin that generates Dummy Text paragraphs. [dt p=3]
 */
-function dtxt($p) {
-    extract(shortcode_atts(array('p'=>'p'), $p));
-    $para = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis dolor et hendrerit ultrices. Donec eget orci nisl. Nunc et tellus tempor, placerat lacus at, maximus leo. Maecenas id ex at quam laoreet viverra sit amet nec enim. Aenean commodo pulvinar magna, non venenatis dui pharetra eu. Integer rhoncus, risus placerat pretium suscipit, sapien dolor bibendum nisl, porta rhoncus erat sapien at sem. Suspendisse potenti. Nullam vulputate pretium dui non dictum.";
-    if($p == null ||$p == "" || $p == 1){ return $para;}
-    elseif($p > 1){ return str_repeat($para, $p); }
-    else{return $para; }
+
+function dtxt($atts) {
+    // Set default value for 'p' as 1
+    $atts = shortcode_atts(array('p' => 1), $atts);
+    $p = intval($atts['p']); // Convert the 'p' attribute to an integer
+    
+    // Dummy text paragraph
+    $para = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam mollis dolor et hendrerit ultrices. Donec eget orci nisl.   Maecenas id ex at quam laoreet viverra sit amet nec enim. Aenean commodo pulvinar magna, non venenatis dui pharetra eu.  </p>";
+
+    // Return paragraphs based on the value of 'p'
+    if ($p < 1) {
+        $p = 1;
+    }
+    return str_repeat($para, $p);
 }
 
 add_shortcode('dt', 'dtxt');
-?>
