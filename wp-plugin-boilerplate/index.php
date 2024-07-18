@@ -9,28 +9,33 @@ Author URI: http://127.0.0.1/
 */
 if(!defined('ABSPATH')){ die(); }
 
-class Test_beta{
-    public function __construct(){
-        add_action('init',array($this, 'custom_post_type' ));
-    }
-    public function active(){
-        update_option( 'plugin_activated', time() );
-    }
-    public function inactive(){
-        update_option( 'plugin_deactivated', time() );
-    }
-    public function custom_post_type(){
-        register_post_type('test',['public'=>true, 'label'=>'Test']);
-    }
+
+// Register custom post type
+function register_custom_post_type() {
+    register_post_type('test', array(
+        'public' => true,
+        'label'  => 'Test'
+    ));
 }
-$t = new Test_beta();
+add_action('init', 'register_custom_post_type');
 
-register_activation_hook(__FILE__, array($t, 'active'));
-register_deactivation_hook( __FILE__, array($t, 'inactive'));
-register_uninstall_hook( __FILE__,   'uninstall_func' );
+// Activation hook
+function activate_plugin() {
+    update_option('plugin_activated', time());
+}
+register_activation_hook(__FILE__, 'activate_plugin');
 
-function uninstall_func(){
+// Deactivation hook
+function deactivate_plugin() {
+    update_option('plugin_deactivated', time());
+}
+register_deactivation_hook(__FILE__, 'deactivate_plugin');
+
+// Uninstall hook
+function uninstall_plugin() {
     delete_option('plugin_activated');
     delete_option('plugin_deactivated');
-    die('test gone wrong!');
+    // It's generally better to not call die() in uninstall hooks.
+    // Instead, you might use error_log() or similar if needed.
 }
+register_uninstall_hook(__FILE__, 'uninstall_plugin');
